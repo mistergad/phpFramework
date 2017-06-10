@@ -1,15 +1,38 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: asus-pc
- * Date: 16.05.2017
- * Time: 16:19
- */
 
-    $query = $_SERVER['QUERY_STRING'];
+    error_reporting(-1);
 
-    require '../vendor/core/Router.php';
+    use vendor\core\Router;
 
-    $router = new Router();
+    $query = rtrim($_SERVER['QUERY_STRING'], '/');
 
-?>
+    define('WWW', __DIR__);
+    define('ROOT', dirname(__DIR__));
+    define('CORE', ROOT . '/vendor/core');
+    define('APP', ROOT . '/app');
+    define('LAYOUT', 'default');
+
+    require '../vendor/libs/functions.php';
+//    require '../app/controllers/Main.php';
+//    require '../app/controllers/posts.php';
+//    require '../app/controllers/PostsNew.php';
+
+    spl_autoload_register(function($class){
+        $file = ROOT . '/' . str_replace('\\', '/', $class) . '.php';
+        //$file = APP . "/controllers/$class.php";
+        //echo $file;
+        if(is_file($file))
+        {
+            require_once $file;
+        }
+    });
+
+
+    //Router::add('^page/?(?P<action>[a-z-]+)?$', ['controller' => 'Posts']);
+    //default routes//
+    Router::add('^$', ['controller' => 'Main', 'action' => 'index']);
+    Router::add('^(?P<controller>[a-z-]+)/?(?P<action>[a-z-]+)?$');
+
+    //debug(Router::getRoutes());
+
+    Router::dispatch($query);
