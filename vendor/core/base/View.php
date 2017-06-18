@@ -18,27 +18,31 @@ class View
     protected $route = [];
 
     /*
-     * Current View
-     * @var string
-     */
-    protected $view;
-
-    /*
      * Current layout(template)
      * @var string
      */
     protected $layout;
 
-    public function __construct($route, $layout = '', $view = '')
+    public function __construct($route, $layout = '')
     {
         $this->route = $route;
-        $this->layout = $layout ?: LAYOUT;
-        $this->view = $view;
+        if($layout === false)
+        {
+            $this->layout = false;
+        }
+        else
+        {
+            $this->layout = $layout ?: LAYOUT;
+        }
+
     }
 
-    public function render()
+    public function render($vars)
     {
-        $file_view = APP . "/views/{$this->route['controller']}/{$this->view}.php";
+        if(is_array($vars)) extract($vars);
+
+        $file_view = APP . "/views/{$this->route['controller']}/{$this->route['action']}.php";
+
         ob_start();
         if(is_file($file_view))
         {
@@ -48,18 +52,21 @@ class View
         {
             echo "<p>Cannot find view <b>$file_view</b></p>";
         }
-
         $content = ob_get_clean();
 
-        $file_layout = APP . "/views/layouts/{$this->layout}.php";
-        if(is_file($file_layout))
+        if($this->layout !== false)
         {
-            require $file_layout;
+            $file_layout = APP . "/views/layouts/{$this->layout}.php";
+            if(is_file($file_layout))
+            {
+                require $file_layout;
+            }
+            else
+            {
+                echo "<p>Cannot find view <b>$file_layout</b></p>";
+            }
         }
-        else
-        {
-            echo "<p>Cannot find view <b>$file_layout</b></p>";
-        }
+
 
     }
 }

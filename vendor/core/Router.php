@@ -57,6 +57,7 @@ class Router
                     $route['action'] = 'index';
                 }
                 $route['controller'] = self::upperCamelCase($route['controller']);
+                $route['action'] = self::upperCamelCase($route['action']);
                 self::$route = $route;
                 return true;
             }
@@ -73,11 +74,12 @@ class Router
         $url = self::removeQueryString($url);
         if(self::matchRoute($url))
         {
-            $controller = 'app\controllers\\' . self::$route['controller'];
+            $controller = 'app\controllers\\' . self::$route['controller'] . 'Controller';
             if(class_exists($controller))
             {
                 $cObj = new $controller(self::$route);
-                $action = self::lowerCamelCase(self::$route['action'] . 'Action');
+                //$action = self::lowerCamelCase(self::$route['action']) . 'Action';
+                $action = 'action' . self::$route['action'];
                 if(method_exists($cObj, $action))
                 {
                     $cObj->$action();
@@ -106,10 +108,10 @@ class Router
         return str_replace(' ', '', ucwords(str_replace('-', ' ', $name)));
     }
 
-    protected static function lowerCamelCase($name)
-    {
-        return  lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $name))));
-    }
+//    protected static function lowerCamelCase($name)
+//    {
+//        return  lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $name))));
+//    }
 
     protected static function removeQueryString($url)
     {

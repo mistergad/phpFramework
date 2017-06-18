@@ -3,9 +3,9 @@
 namespace app\controllers;
 
 
-class posts extends App
+class PostsController extends AppController
 {
-    public function indexAction()
+    public function actionIndex()
     {
         echo 'posts::index';
     }

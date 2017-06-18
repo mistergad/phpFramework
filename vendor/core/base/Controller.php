@@ -16,6 +16,10 @@ abstract class Controller
 {
     /*
      * Current route(path)
+     * @array[]
+     *      @var string controller
+     *      @var string action
+     *
      */
     protected $route = [];
 
@@ -25,6 +29,11 @@ abstract class Controller
      */
     protected $layout;
 
+    /*
+     * Transmitted variables
+     * @var array
+     */
+    protected $vars = [];
 
     public function __construct($route)
     {
@@ -41,9 +50,12 @@ abstract class Controller
 
     public function getView()
     {
-        $vObj = new View($this->route, $this->layout, $this->route['action']);
-        $vObj->render();
+        $vObj = new View($this->route, $this->layout);
+        $vObj->render($this->vars);
     }
 
-
+    public function setVars($vars)
+    {
+        $this->vars = $vars;
+    }
 }

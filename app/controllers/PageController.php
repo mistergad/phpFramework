@@ -10,9 +10,9 @@ namespace app\controllers;
 
 
 
-class Page extends App
+class PageController extends AppController
 {
-    public function viewAction()
+    public function actionView()
     {
         debug($this->route);
         debug($_GET);
